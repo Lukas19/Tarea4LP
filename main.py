@@ -215,6 +215,99 @@ def traducirlinea(line, indentation):
 
         return linea_traducida,indentation
 
+    elif (re.search(r'IFELSE \(([\w\d ]*)\) \(([\w\d ]*)\) \(([\w\d ]*)\)', line) != None):
+
+        match = re.search(r'IFELSE \(([\w\d ]*)\) \(([\w\d ]*)\) \(([\w\d ]*)\)', line)
+        cond = match.group(2)
+        splits = cond.split()
+
+        if (len(splits) == 1):
+            splits.append("")
+
+        if (cond == "TRUE"):
+            cond = "True"
+        elif (cond == "FALSE"):
+            cond = "False"
+        else:
+            cond = splits[0] + "("
+            for i in range(len(splits)):
+                if (i == len(splits)-1):
+                    if (re.search(r'PARAM(\d+)', splits[i]) != None):
+                        submatch = re.search(r'PARAM(\d+)', splits[i])
+                        cond += "params[" + submatch.group(1) + "])"
+                    else:
+                        cond += splits[i]+")"
+                elif (i == 0):
+                    continue
+                else:
+                    if (re.search(r'PARAM(\d+)', splits[i]) != None):
+                        submatch = re.search(r'PARAM(\d+)', splits[i])
+                        cond += "params[" + submatch.group(1) + "], "
+                    else:
+                        cond += splits[i]+", "
+
+        linea_traducida = indentation*indent + "if (" + cond + "):\n"
+        indentation += 1
+        args1 = match.group(1).split()
+        proc1 = args1[0] + "("
+
+        if (len(args1) == 1):
+            args1.append("")
+
+        if (args1[0] == ""):
+            linea_traducida += indentation*indent + "pass\n"
+        else:
+            for i in range(len(args1)):
+                if (i == len(args1)-1):
+                    if (re.search(r'PARAM(\d+)', args1[i]) != None):
+                        submatch = re.search(r'PARAM(\d+)', args1[i])
+                        proc1 += "params[" + submatch.group(1) + "])"
+                    else:
+                        proc1 += args1[i]+")"
+                elif (i == 0):
+                    continue
+                else:
+                    if (re.search(r'PARAM(\d+)', args1[i]) != None):
+                        submatch = re.search(r'PARAM(\d+)', args1[i])
+                        proc1 += "params[" + submatch.group(1) + "], "
+                    else:
+                        proc1 += args1[i]+", "
+            linea_traducida += indentation*indent + proc1 + "\n"
+
+        indentation -= 1
+        linea_traducida += indentation*indent + "else:\n"
+        indentation += 1
+        args2 = match.group(3).split()
+        proc2 = args2[0] + "("
+
+        if (len(args2) == 1):
+            args2.append("")
+
+        if (args2[0] == ""):
+            linea_traducida += indentation*indent + "pass\n"
+        else:
+            for i in range(len(args2)):
+                if (i == len(args2)-1):
+                    if (re.search(r'PARAM(\d+)', args2[i]) != None):
+                        submatch = re.search(r'PARAM(\d+)', args2[i])
+                        proc2 += "params[" + submatch.group(1) + "])"
+                    else:
+                        proc2 += args2[i]+")"
+                elif (i == 0):
+                    continue
+                else:
+                    if (re.search(r'PARAM(\d+)', args2[i]) != None):
+                        submatch = re.search(r'PARAM(\d+)', args2[i])
+                        proc2 += "params[" + submatch.group(1) + "], "
+                    else:
+                        proc2 += args2[i]+", "
+
+            linea_traducida += indentation*indent + proc2
+
+        indentation -= 1
+
+        return linea_traducida,indentation
+
     elif (re.search(r'VAR\((\w+)\) <= ([\w\d]+)', line) != None):
         match = re.search(r'VAR\((\w+)\) <= ([\w\d]+)', line)
         linea_traducida =  indentation*indent + match.group(1) + " = " + match.group(2)
@@ -334,99 +427,6 @@ def traducirlinea(line, indentation):
                 proc += match[i]+", "
 
         linea_traducida = indentation*indent + proc
-        return linea_traducida,indentation
-
-    elif (re.search(r'IFELSE \(([\w\d ]*)\) \(([\w\d ]*)\) \(([\w\d ]*)\)', line) != None):
-
-        match = re.search(r'IFELSE \(([\w\d ]*)\) \(([\w\d ]*)\) \(([\w\d ]*)\)', line)
-        cond = match.group(2)
-        splits = cond.split()
-
-        if (len(splits) == 1):
-            splits.append("")
-
-        if (cond == "TRUE"):
-            cond = "True"
-        elif (cond == "FALSE"):
-            cond = "False"
-        else:
-            cond = splits[0] + "("
-            for i in range(len(splits)):
-                if (i == len(splits)-1):
-                    if (re.search(r'PARAM(\d+)', splits[i]) != None):
-                        submatch = re.search(r'PARAM(\d+)', splits[i])
-                        cond += "params[" + submatch.group(1) + "])"
-                    else:
-                        cond += splits[i]+")"
-                elif (i == 0):
-                    continue
-                else:
-                    if (re.search(r'PARAM(\d+)', splits[i]) != None):
-                        submatch = re.search(r'PARAM(\d+)', splits[i])
-                        cond += "params[" + submatch.group(1) + "], "
-                    else:
-                        cond += splits[i]+", "
-
-        linea_traducida = indentation*indent + "if (" + cond + "):\n"
-        indentation += 1
-        args1 = match.group(1).split()
-        proc1 = args1[0] + "("
-
-        if (len(args1) == 1):
-            args1.append("")
-
-        if (args1[0] == ""):
-            linea_traducida += indentation*indent + "pass\n"
-        else:
-            for i in range(len(args1)):
-                if (i == len(args1)-1):
-                    if (re.search(r'PARAM(\d+)', args1[i]) != None):
-                        submatch = re.search(r'PARAM(\d+)', args1[i])
-                        proc1 += "params[" + submatch.group(1) + "])"
-                    else:
-                        proc1 += args1[i]+")"
-                elif (i == 0):
-                    continue
-                else:
-                    if (re.search(r'PARAM(\d+)', args1[i]) != None):
-                        submatch = re.search(r'PARAM(\d+)', args1[i])
-                        proc1 += "params[" + submatch.group(1) + "], "
-                    else:
-                        proc1 += args1[i]+", "
-            linea_traducida += indentation*indent + proc1 + "\n"
-
-        indentation -= 1
-        linea_traducida += indentation*indent + "else:\n"
-        indentation += 1
-        args2 = match.group(3).split()
-        proc2 = args2[0] + "("
-
-        if (len(args2) == 1):
-            args2.append("")
-
-        if (args2[0] == ""):
-            linea_traducida += indentation*indent + "pass\n"
-        else:
-            for i in range(len(args2)):
-                if (i == len(args2)-1):
-                    if (re.search(r'PARAM(\d+)', args2[i]) != None):
-                        submatch = re.search(r'PARAM(\d+)', args2[i])
-                        proc2 += "params[" + submatch.group(1) + "])"
-                    else:
-                        proc2 += args2[i]+")"
-                elif (i == 0):
-                    continue
-                else:
-                    if (re.search(r'PARAM(\d+)', args2[i]) != None):
-                        submatch = re.search(r'PARAM(\d+)', args2[i])
-                        proc2 += "params[" + submatch.group(1) + "], "
-                    else:
-                        proc2 += args2[i]+", "
-
-            linea_traducida += indentation*indent + proc2
-
-        indentation -= 1
-
         return linea_traducida,indentation
 
     else:
