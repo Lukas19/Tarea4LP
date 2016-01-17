@@ -10,15 +10,13 @@ traduccion = list()
 indent_level = 0
 indent = "    "
 
-traduccion.append("from stdlib import *\n")
+traduccion.append("from stdlib import *\n\n")
 
 def appendline(list, line):
     newline = line + "\n"
     list.append(newline)
 
 def traducirlinea(line, indentation):
-
-    print indentation
 
     if (re.search(r'VAR\(\w+\) <= TRUE', line) != None):
         match = re.search(r'VAR\(\w+\) <= TRUE', line)
@@ -58,11 +56,19 @@ def traducirlinea(line, indentation):
             cond = splits[0] + "("
             for i in range(len(splits)):
                 if (i == len(splits)-1):
-                    cond += splits[i]+")"
+                    if (re.search(r'PARAM(\d+)', splits[i]) != None):
+                        submatch = re.search(r'PARAM(\d+)', splits[i])
+                        cond += "params[" + submatch.group(1) + "])"
+                    else:
+                        cond += splits[i]+")"
                 elif (i == 0):
                     continue
                 else:
-                    cond += splits[i]+", "
+                    if (re.search(r'PARAM(\d+)', splits[i]) != None):
+                        submatch = re.search(r'PARAM(\d+)', splits[i])
+                        cond += "params[" + submatch.group(1) + "], "
+                    else:
+                        cond += splits[i]+", "
 
         statement.append(indentation*indent + "if (" + cond + "):")
         indentation += 1
@@ -74,11 +80,19 @@ def traducirlinea(line, indentation):
 
         for i in range(len(args1)):
             if (i == len(args1)-1):
-                proc1 += args1[i]+")"
+                if (re.search(r'PARAM(\d+)', args1[i]) != None):
+                    submatch = re.search(r'PARAM(\d+)', args1[i])
+                    proc1 += "params[" + submatch.group(1) + "])"
+                else:
+                    proc1 += args1[i]+")"
             elif (i == 0):
                 continue
             else:
-                proc1 += args1[i]+", "
+                if (re.search(r'PARAM(\d+)', args1[i]) != None):
+                    submatch = re.search(r'PARAM(\d+)', args1[i])
+                    proc1 += "params[" + submatch.group(1) + "], "
+                else:
+                    proc1 += args1[i]+", "
 
         statement.append(indentation*indent + match.group(4) + " = " + proc1)
 
@@ -93,11 +107,19 @@ def traducirlinea(line, indentation):
 
         for i in range(len(args2)):
             if (i == len(args2)-1):
-                proc2 += args2[i]+")"
+                if (re.search(r'PARAM(\d+)', args2[i]) != None):
+                    submatch = re.search(r'PARAM(\d+)', args2[i])
+                    proc2 += "params[" + submatch.group(1) + "])"
+                else:
+                    proc2 += args2[i]+")"
             elif (i == 0):
                 continue
             else:
-                proc2 += args2[i]+", "
+                if (re.search(r'PARAM(\d+)', args2[i]) != None):
+                    submatch = re.search(r'PARAM(\d+)', args2[i])
+                    proc2 += "params[" + submatch.group(1) + "], "
+                else:
+                    proc2 += args2[i]+", "
 
         statement.append(indentation*indent + match.group(4) + " = " + proc2)
         indentation -= 1
@@ -122,11 +144,19 @@ def traducirlinea(line, indentation):
             cond = splits[0] + "("
             for i in range(len(splits)):
                 if (i == len(splits)-1):
-                    cond += splits[i]+")"
+                    if (re.search(r'PARAM(\d+)', splits[i]) != None):
+                        submatch = re.search(r'PARAM(\d+)', splits[i])
+                        cond += "params[" + submatch.group(1) + "])"
+                    else:
+                        cond += splits[i]+")"
                 elif (i == 0):
                     continue
                 else:
-                    cond += splits[i]+", "
+                    if (re.search(r'PARAM(\d+)', splits[i]) != None):
+                        submatch = re.search(r'PARAM(\d+)', splits[i])
+                        cond += "params[" + submatch.group(1) + "], "
+                    else:
+                        cond += splits[i]+", "
 
         statement.append(indentation*indent + "if (" + cond + "):")
         indentation += 1
@@ -138,11 +168,19 @@ def traducirlinea(line, indentation):
 
         for i in range(len(args1)):
             if (i == len(args1)-1):
-                proc1 += args1[i]+")"
+                if (re.search(r'PARAM(\d+)', args1[i]) != None):
+                    submatch = re.search(r'PARAM(\d+)', args1[i])
+                    proc1 += "params[" + submatch.group(1) + "])"
+                else:
+                    proc1 += args1[i]+")"
             elif (i == 0):
                 continue
             else:
-                proc1 += args1[i]+", "
+                if (re.search(r'PARAM(\d+)', args1[i]) != None):
+                    submatch = re.search(r'PARAM(\d+)', args1[i])
+                    proc1 += "params[" + submatch.group(1) + "], "
+                else:
+                    proc1 += args1[i]+", "
 
         statement.append(indentation*indent + match.group(1) + " = " + proc1)
 
@@ -157,11 +195,19 @@ def traducirlinea(line, indentation):
 
         for i in range(len(args2)):
             if (i == len(args2)-1):
-                proc2 += args2[i]+")"
+                if (re.search(r'PARAM(\d+)', args2[i]) != None):
+                    submatch = re.search(r'PARAM(\d+)', args2[i])
+                    proc2 += "params[" + submatch.group(1) + "])"
+                else:
+                    proc2 += args2[i]+")"
             elif (i == 0):
                 continue
             else:
-                proc2 += args2[i]+", "
+                if (re.search(r'PARAM(\d+)', args2[i]) != None):
+                    submatch = re.search(r'PARAM(\d+)', args2[i])
+                    proc2 += "params[" + submatch.group(1) + "], "
+                else:
+                    proc2 += args2[i]+", "
 
         statement.append(indentation*indent + match.group(1) + " = " + proc2)
         indentation -= 1
@@ -227,7 +273,7 @@ def traducirlinea(line, indentation):
             else:
                 proc += args[i]+", "
 
-        linea_traducida =  indentation*indent + proc
+        linea_traducida =  indentation*indent + "return " + proc
 
         return linea_traducida,indentation
 
@@ -306,12 +352,20 @@ def traducirlinea(line, indentation):
         else:
             cond = splits[0] + "("
             for i in range(len(splits)):
-                if (i == 0):
+                if (i == len(splits)-1):
+                    if (re.search(r'PARAM(\d+)', splits[i]) != None):
+                        submatch = re.search(r'PARAM(\d+)', splits[i])
+                        cond += "params[" + submatch.group(1) + "])"
+                    else:
+                        cond += splits[i]+")"
+                elif (i == 0):
                     continue
-                elif (i == len(splits)-1):
-                    cond += splits[i]+")"
                 else:
-                    cond += splits[i]+", "
+                    if (re.search(r'PARAM(\d+)', splits[i]) != None):
+                        submatch = re.search(r'PARAM(\d+)', splits[i])
+                        cond += "params[" + submatch.group(1) + "], "
+                    else:
+                        cond += splits[i]+", "
 
         linea_traducida = indentation*indent + "if (" + cond + "):\n"
         indentation += 1
@@ -326,11 +380,19 @@ def traducirlinea(line, indentation):
         else:
             for i in range(len(args1)):
                 if (i == len(args1)-1):
-                    proc1 += args1[i]+")"
+                    if (re.search(r'PARAM(\d+)', args1[i]) != None):
+                        submatch = re.search(r'PARAM(\d+)', args1[i])
+                        proc1 += "params[" + submatch.group(1) + "])"
+                    else:
+                        proc1 += args1[i]+")"
                 elif (i == 0):
                     continue
                 else:
-                    proc1 += args1[i]+", "
+                    if (re.search(r'PARAM(\d+)', args1[i]) != None):
+                        submatch = re.search(r'PARAM(\d+)', args1[i])
+                        proc1 += "params[" + submatch.group(1) + "], "
+                    else:
+                        proc1 += args1[i]+", "
             linea_traducida += indentation*indent + proc1 + "\n"
 
         indentation -= 1
@@ -347,11 +409,20 @@ def traducirlinea(line, indentation):
         else:
             for i in range(len(args2)):
                 if (i == len(args2)-1):
-                    proc2 += args2[i]+")"
+                    if (re.search(r'PARAM(\d+)', args2[i]) != None):
+                        submatch = re.search(r'PARAM(\d+)', args2[i])
+                        proc2 += "params[" + submatch.group(1) + "])"
+                    else:
+                        proc2 += args2[i]+")"
                 elif (i == 0):
                     continue
                 else:
-                    proc2 += args2[i]+", "
+                    if (re.search(r'PARAM(\d+)', args2[i]) != None):
+                        submatch = re.search(r'PARAM(\d+)', args2[i])
+                        proc2 += "params[" + submatch.group(1) + "], "
+                    else:
+                        proc2 += args2[i]+", "
+
             linea_traducida += indentation*indent + proc2
 
         indentation -= 1
