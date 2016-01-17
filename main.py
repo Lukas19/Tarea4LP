@@ -326,14 +326,14 @@ def traducirlinea(line):
 
         return linea_traducida
 
-    elif (re.search(r'\$\^PROC\((w+)\)', line) != None):
-        match = re.search(r' \^PROC\((w+)\)', line)
+    elif (re.search(r'\$\^PROC\(\w+\)', line) != None):
+        match = re.search(r'\$\^PROC\(\w+\)', line)
         linea_traducida = indent_level*indent+"def "+match.group(1)+"(*params):"
 
         return linea_traducida
 
-    elif (re.search(r'#(w+)', line) != None):
-        match = re.search(r'#(w+)', line)
+    elif (re.search(r'#(\d+)', line) != None):
+        match = re.search(r'#(\d+)', line)
         linea_traducida = 2*indent_level*indent + "return" + match.group(1)
 
         return linea_traducida
